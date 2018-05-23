@@ -1,0 +1,87 @@
+--- !com.amazonaws.mobilehub.v0.Project 
+apps:
+  web: !com.amazonaws.mobilehub.v0.AppDO {}
+features:
+  cloudlogic: !com.amazonaws.mobilehub.v0.CloudLogic 
+    components:
+      transactionsCRUD: !com.amazonaws.mobilehub.v0.API 
+        attributes:
+          name: transactionsCRUD
+          requires-signin: true
+          sdk-generation-stage-name: Development
+        paths:
+          /transactions: !com.amazonaws.mobilehub.v0.Function 
+            codeFilename: uploads/transactions-20180521005707.zip
+            description: 'Handler for calls to resource path : /transactions/{proxy+}'
+            enableCORS: true
+            environment: {}
+            handler: lambda.handler
+            hashcode: BSstcXWowcn3p+uTpC3SLIdDwP4mn83JN6CQZqF8gbs=
+            memorySize: '128'
+            modified: '2018-05-21T07:58:01.135+0000'
+            name: transactions
+            runtime: nodejs6.10
+            timeout: '3'
+            version: 5WCZOknvOucfqg.FxA0ZW6HxpyREHh1b
+          '/transactions/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
+            codeFilename: uploads/transactions-20180521005707.zip
+            description: 'Handler for calls to resource path : /transactions/{proxy+}'
+            enableCORS: true
+            environment: {}
+            handler: lambda.handler
+            hashcode: BSstcXWowcn3p+uTpC3SLIdDwP4mn83JN6CQZqF8gbs=
+            memorySize: '128'
+            modified: '2018-05-21T07:58:01.135+0000'
+            name: transactions
+            runtime: nodejs6.10
+            timeout: '3'
+            version: TS_HpFzMPEbsNbLUdNI1W8Vog0Fcpa1q
+  content-delivery: !com.amazonaws.mobilehub.v0.ContentDelivery 
+    attributes:
+      enabled: true
+      visibility: public-global
+    components:
+      release: !com.amazonaws.mobilehub.v0.Bucket {}
+  database: !com.amazonaws.mobilehub.v0.Database 
+    components:
+      database-nosql: !com.amazonaws.mobilehub.v0.NoSQLDatabase 
+        tables:
+          - !com.amazonaws.mobilehub.v0.NoSQLTable 
+            attributes:
+              amount: N
+              balance: N
+              date: S
+              userId: S
+            hashKeyName: userId
+            hashKeyType: S
+            rangeKeyName: date
+            rangeKeyType: S
+            tableName: ___DYNAMIC_PREFIX___-transactions
+            tablePrivacy: private
+  mobile-analytics: !com.amazonaws.mobilehub.v0.Pinpoint 
+    components:
+      analytics: !com.amazonaws.mobilehub.v0.PinpointAnalytics {}
+  sign-in: !com.amazonaws.mobilehub.v0.SignIn 
+    attributes:
+      enabled: true
+      optional-sign-in: true
+    components:
+      sign-in-user-pools: !com.amazonaws.mobilehub.v0.UserPoolsIdentityProvider 
+        attributes:
+          alias-attributes:
+            - email
+            - phone_number
+          mfa-configuration: ON
+          name: userpool
+          password-policy: !com.amazonaws.mobilehub.ConvertibleMap 
+            min-length: '8'
+            require-lower-case: true
+            require-numbers: true
+            require-symbols: true
+            require-upper-case: true
+  user-files: !com.amazonaws.mobilehub.v0.UserFiles 
+    attributes:
+      enabled: true
+      wildcard-cors-policy: true
+name: aws-amplify-vue-2018-05-20-19-25-58
+region: us-west-2
