@@ -11,31 +11,31 @@ features:
           sdk-generation-stage-name: Development
         paths:
           /transactions: !com.amazonaws.mobilehub.v0.Function 
-            codeFilename: uploads/transactions-20180521005707.zip
+            codeFilename: uploads/transactions-20180529233251.zip
             description: 'Handler for calls to resource path : /transactions/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: BSstcXWowcn3p+uTpC3SLIdDwP4mn83JN6CQZqF8gbs=
+            hashcode: QQnyg8qF7QWk3wSjsQgtmFfrxY1Ao0eBfswQMSWxKbA=
             memorySize: '128'
-            modified: '2018-05-21T07:58:01.135+0000'
+            modified: '2018-05-30T06:33:27.678+0000'
             name: transactions
             runtime: nodejs6.10
             timeout: '3'
-            version: 5WCZOknvOucfqg.FxA0ZW6HxpyREHh1b
+            version: uJDDHS5Alan_BNTp4zqikNyDlGlMvPJN
           '/transactions/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
-            codeFilename: uploads/transactions-20180521005707.zip
+            codeFilename: uploads/transactions-20180529233251.zip
             description: 'Handler for calls to resource path : /transactions/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: BSstcXWowcn3p+uTpC3SLIdDwP4mn83JN6CQZqF8gbs=
+            hashcode: QQnyg8qF7QWk3wSjsQgtmFfrxY1Ao0eBfswQMSWxKbA=
             memorySize: '128'
-            modified: '2018-05-21T07:58:01.135+0000'
+            modified: '2018-05-30T06:33:27.678+0000'
             name: transactions
             runtime: nodejs6.10
             timeout: '3'
-            version: TS_HpFzMPEbsNbLUdNI1W8Vog0Fcpa1q
+            version: YvcL1wkgSiqFweGNq7T1RO68wB187DBN
   content-delivery: !com.amazonaws.mobilehub.v0.ContentDelivery 
     attributes:
       enabled: true

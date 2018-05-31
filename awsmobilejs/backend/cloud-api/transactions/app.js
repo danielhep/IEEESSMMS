@@ -147,6 +147,49 @@ app.get("/transactions/object/:date", function(req, res) {
 });
 
 /************************************
+ * HTTP post method for insert object w/ calculations for total transaction *
+ *************************************/
+app.post(path, function(req, res) {
+  if (userIdPresent) {
+    req.body["userId"] =
+      req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
+  // get the most recent transaction for this user
+  var params = {
+    Limit: 1,
+    ScanIndexForward: false,
+    TableName: tableName,
+    ExpressionAttributeValues: { ":id": req.body["userId"] },
+    KeyConditionExpression: "userId = :id"
+  };
+
+  dynamodb.query(params, (err, data) => {
+    let balance = 0;
+    let transactionNo = 0;
+    if (!err) {
+      if (data.Items[0]) balance = data.Items[0].balance;
+      if (data.Items[0]) transactionNo = data.Items[0].transactionNo + 1;
+    }
+    let item = req.body;
+
+    item.transactionNo = transactionNo;
+
+    if (req.body["type"] == "deposit") balance += req.body["amount"];
+    else if (req.body["type"] == "withdrawal") balance -= req.body["amount"];
+
+    item.balance = Number(balance.toFixed(2));
+    let putItemParams = { TableName: tableName, Item: item };
+    dynamodb.put(putItemParams, (err, data) => {
+      if (err) {
+        res.json({ error: err, url: req.url, body: req.body });
+      } else {
+        res.json({ success: "put call succeed!", url: req.url, data: data });
+      }
+    });
+  });
+});
+
+/************************************
  * HTTP put method for insert object *
  *************************************/
 
@@ -173,24 +216,24 @@ app.put(path, function(req, res) {
  * HTTP post method for insert object *
  *************************************/
 
-app.post(path, function(req, res) {
-  if (userIdPresent) {
-    req.body["userId"] =
-      req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
+// app.post(path, function(req, res) {
+//   if (userIdPresent) {
+//     req.body["userId"] =
+//       req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+//   }
 
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  };
-  dynamodb.put(putItemParams, (err, data) => {
-    if (err) {
-      res.json({ error: err, url: req.url, body: req.body });
-    } else {
-      res.json({ success: "post call succeed!", url: req.url, data: data });
-    }
-  });
-});
+//   let putItemParams = {
+//     TableName: tableName,
+//     Item: req.body
+//   };
+//   dynamodb.put(putItemParams, (err, data) => {
+//     if (err) {
+//       res.json({ error: err, url: req.url, body: req.body });
+//     } else {
+//       res.json({ success: "post call succeed!", url: req.url, data: data });
+//     }
+//   });
+// });
 
 /**************************************
  * HTTP remove method to delete object *

@@ -1,42 +1,70 @@
 <template>
   <v-card>
     <v-card-title>
-      <span class="headline">User Profile</span>
+      <span class="headline">Add Transaction</span>
     </v-card-title>
     <v-card-text>
       <v-container grid-list-md>
-        <v-layout wrap>
-          <v-flex xs12>
-            <v-radio-group row v-model="form.type">
-              <v-radio label="Deposit" value="deposit"></v-radio>
-              <v-radio selected label="Withdrawal" value="withdrawal"></v-radio>
-            </v-radio-group>
-          </v-flex>
-          <v-flex>
-            <v-text-field label="Transaction Amount" prepend-icon="money" required v-model="form.amount"></v-text-field>
-          </v-flex>
-        </v-layout>
+        <v-form ref="form" v-model="valid">
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-radio-group required row v-model="form.type">
+                <v-radio label="Deposit" value="deposit"></v-radio>
+                <v-radio label="Withdrawal" value="withdrawal"></v-radio>
+              </v-radio-group>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field :rules="amountRules" type="number" :autofocus="true" label="Transaction Amount" prefix="$" required v-model="form.amount"></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-form>
       </v-container>
-      <small>*indicates required field</small>
     </v-card-text>
     <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" flat @click.native="$emit('cancel')">Cancel</v-btn>
-      <v-btn color="blue darken-1" flat @click.native="$emit('submit', form)">Submit</v-btn>
+      <v-btn block color="error" @click.native="$emit('cancel')">Cancel</v-btn>
+      <v-btn :loading="loading" :disabled="!valid" block type="submit" color="info" @click.native="submit()">Submit</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { API } from "aws-amplify";
+import { DateTime } from "luxon";
+
 export default {
   name: "AddTransactionDialog",
   data() {
     return {
-      form: {}
+      loading: false,
+      valid: true,
+      form: {
+        type: "withdrawal"
+      },
+      amountRules: [
+        v => !!v || "Amount is required.",
+        v => (v && Number(v) >= 0.25) || "Amount must be more than $0.25"
+      ]
     };
   },
   methods: {
-    submit() {}
+    submit() {
+      if (this.$refs.form.validate()) {
+        const newEntry = {
+          date: DateTime.local().toISO(),
+          amount: Number(this.form.amount),
+          type: this.form.type
+        };
+        this.loading = true;
+        API.post("transactionsCRUD", "/transactions", { body: newEntry }).then(
+          data => {
+            this.form = { type: "withdrawal" };
+            this.loading = false;
+            console.log(data);
+            this.$emit("submit");
+          }
+        );
+      }
+    }
   }
 };
 </script>

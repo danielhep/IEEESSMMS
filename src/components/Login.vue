@@ -52,6 +52,7 @@ export default {
       Auth.signIn(this.credentials.username, this.credentials.password)
         .then(usr => {
           this.bus.username = usr.username;
+          this.$router.push("/");
         })
         .catch(err => {
           console.log(err);

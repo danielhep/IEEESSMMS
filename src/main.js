@@ -15,12 +15,13 @@ Vue.use(Vuetify);
 Vue.config.productionTip = false;
 export const dataBus = new Vue({
   data: {
-    username: "username test"
+    user: { attributes: { email: "" }, username: "", id: "" }
   }
 });
 
-Auth.currentUserPoolUser().then(usr => {
-  dataBus.$data.username = usr.username;
+Auth.currentUserInfo().then(usr => {
+  dataBus.$data.user = usr;
+  console.log(usr);
 });
 
 /* eslint-disable no-new */
