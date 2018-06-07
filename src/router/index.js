@@ -8,6 +8,7 @@ import ConfirmSignUp from "@/components/ConfirmSignUp";
 Vue.use(Router);
 
 export default new Router({
+  historyMode: true,
   routes: [
     {
       path: "/",

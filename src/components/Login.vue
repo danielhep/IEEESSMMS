@@ -14,8 +14,8 @@
                   {{errorMessage}}
                 </v-alert>
                 <v-form>
-                  <v-text-field prepend-icon="person" name="login" label="Login" type="text" v-model="credentials.username"></v-text-field>
-                  <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password" v-model="credentials.password"></v-text-field>
+                  <v-text-field prepend-icon="person" name="login" label="Login" type="text" v-model="username"></v-text-field>
+                  <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password" v-model="password"></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -32,26 +32,25 @@
 
 <script>
 import { Auth } from "aws-amplify";
-import { dataBus } from "../main.js";
 
 export default {
   name: "Login",
   props: ["user"],
   data() {
     return {
-      bus: dataBus.$data,
-      credentials: {
-        username: "",
-        password: ""
-      },
+      username: "",
+      password: "",
       errorMessage: ""
     };
   },
   methods: {
     submitLogin() {
-      Auth.signIn(this.credentials.username, this.credentials.password)
+      this.$store
+        .dispatch("signIn", {
+          username: this.username,
+          password: this.password
+        })
         .then(usr => {
-          this.bus.username = usr.username;
           this.$router.push("/");
         })
         .catch(err => {

@@ -3,24 +3,24 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card color="blue-grey darken-2" class="white--text">
-          <v-card-title primary-title>
-            <div v-if="balance >= 0" class="headline">Welcome, {{dataBus.$data.user.username}}. Your balance is ${{balance.toFixed(2)}}. </div>
-            <div v-if="balance < 0" class="headline">Welcome, {{dataBus.$data.user.username}}. Your balance is -${{(-balance).toFixed(2)}}. Please add funds. </div>
+          <v-card-title primary-title v-if="!loading">
+            <div v-if="!isInDebt" class="headline">Welcome, {{name}}. Your balance is ${{balance}}. </div>
+            <div v-if="isInDebt" class="headline">Welcome, {{name}}. Your balance is -${{balance}}. </div>
           </v-card-title>
           <v-card-actions>
-            <v-btn color="success">Add Money</v-btn>
+            <v-btn color="success" @click="addTransactionDialog = true">Add Money</v-btn>
             <v-btn color="info" @click="editProfileDialog = true">Edit Profile</v-btn>
-            <v-btn color="error" @click="console.log(pagination)">Sign Out</v-btn>
+            <v-btn color="error" @click="signOut">Sign Out</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
-      <v-flex v-if="balance < 0" xs12 transition="slide-y-transition">
-        <v-alert :value="true" type="warning">
-          You currently are ${{(-balance).toFixed(2)}} in debt. Please repay as soon as possible.
+      <v-flex v-if="isInDebt" xs12 transition="slide-y-transition">
+        <v-alert :value="true" type="error">
+          You currently are ${{balance}} in debt. Please repay as soon as possible.
         </v-alert>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :pagination.sync="pagination" :loading="loading" :headers="headers" :items="transactions" hide-actions class="elevation-1">
+        <v-data-table :pagination.sync="pagination" :loading="loading" :headers="headers" :items="transactions" class="elevation-1">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.transactionNo }}</td>
             <td>{{ props.item.date }}</td>
@@ -49,8 +49,6 @@
 </template>
 <script>
 import { API } from "aws-amplify";
-import { dataBus } from "../main.js";
-import { DateTime } from "luxon";
 import AddTransactionDialog from "@/components/AddTransactionDialog";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
@@ -60,39 +58,43 @@ export default {
       successSnackbar: false,
       addTransactionDialog: false,
       editProfileDialog: false,
-      dataBus: dataBus,
-      balance: 0,
       headers: [
         { text: "#", align: "left", value: "transactionNo" },
         { text: "Date", align: "left", value: "date", sortable: false },
         { text: "Transaction Amount", value: "amount", sortable: false },
         { text: "Balance", value: "balance", sortable: false }
       ],
-      transactions: [],
       loading: true,
       pagination: {
-        descending: true
+        descending: true,
+        rowsPerPage: 10
       }
     };
   },
   created() {
     this.fetchData();
   },
+  computed: {
+    name() {
+      return this.$store.getters.userFullName;
+    },
+    transactions() {
+      return this.$store.state.transactionData;
+    },
+    balance() {
+      return this.$store.getters.balance;
+    },
+    isInDebt() {
+      return this.$store.getters.isInDebt;
+    }
+  },
   methods: {
-    fetchData() {
-      this.loading = true;
-      API.get("transactionsCRUD", "/transactions").then(result => {
-        this.loading = false;
-        console.log(result);
-        result = result.map(element => {
-          element.date = DateTime.fromISO(element.date).toLocaleString(
-            DateTime.DATETIME_FULL
-          );
-          return element;
-        });
-        this.balance = result[result.length - 1].balance;
-        this.transactions = result;
-      });
+    async fetchData() {
+      await this.$store.dispatch("loadTransactionData");
+      this.loading = false;
+    },
+    signOut() {
+      this.$store.dispatch("signOut");
     },
     transactionDialogSuccess() {
       this.addTransactionDialog = false;

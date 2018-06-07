@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       loading: false,
+      errorMessage: "",
       valid: true,
       newPassword: "",
       oldPassword: "",

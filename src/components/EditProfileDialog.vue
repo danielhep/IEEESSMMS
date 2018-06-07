@@ -63,7 +63,9 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        this.user.attributes = this.user.a;
+        this.user.attributes.phone_number = `+${
+          this.user.attributes.phone_number
+        }`;
         Auth.updateUserAttributes(this.user, this.user.attributes).then(
           result => {
             this.loading = false;
