@@ -1,5 +1,6 @@
 import Amplify, { Auth, API } from "aws-amplify";
 import { DateTime } from "luxon";
+import router from "./router";
 
 export default {
   async signOut({ commit }) {
