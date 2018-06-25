@@ -19,6 +19,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn @click="submitVerification()" color="primary">Verify</v-btn>
+                <v-btn @click="resend()" color="primary">Resend</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -33,21 +34,19 @@ import { Auth } from "aws-amplify";
 
 export default {
   name: "Login",
+  props: ["username"],
   data() {
     return {
-      wid: "",
+      wid: this.$props.username,
       code: "",
       errorMessage: ""
     };
-  },
-  created() {
-    console.log(Auth.currentAuthenticatedUser());
   },
   methods: {
     submitVerification() {
       Auth.confirmSignUp(this.wid, this.code)
         .then(() => {
-          this.$router.push("/");
+          this.$router.push("/login");
         })
         .catch(err => {
           console.log(err);

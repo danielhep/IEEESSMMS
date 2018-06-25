@@ -11,7 +11,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "aws-amplify": "^0.4.1",
+    "aws-amplify": "^0.4.6",
     "lodash": "^4.17.10",
     "luxon": "^1.2.1",
     "vue": "^2.5.2",

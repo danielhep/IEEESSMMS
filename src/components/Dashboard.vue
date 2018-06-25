@@ -4,8 +4,7 @@
       <v-flex xs12>
         <v-card color="blue-grey darken-2" class="white--text">
           <v-card-title primary-title v-if="!loading">
-            <div v-if="!isInDebt" class="headline">Welcome, {{name}}. Your balance is ${{balance}}. </div>
-            <div v-if="isInDebt" class="headline">Welcome, {{name}}. Your balance is -${{balance}}. </div>
+            <div class="headline">Welcome, {{name}}. Your balance is {{balanceText}}. </div>
           </v-card-title>
           <v-card-actions>
             <v-btn color="success" @click="addTransactionDialog = true">Add Money</v-btn>
@@ -16,7 +15,7 @@
       </v-flex>
       <v-flex v-if="isInDebt" xs12 transition="slide-y-transition">
         <v-alert :value="true" type="error">
-          You currently are ${{balance}} in debt. Please repay as soon as possible.
+          You are currently in debt. Please repay as soon as possible.
         </v-alert>
       </v-flex>
       <v-flex xs12>
@@ -52,6 +51,8 @@ import { API } from "aws-amplify";
 import AddTransactionDialog from "@/components/AddTransactionDialog";
 import EditProfileDialog from "@/components/EditProfileDialog";
 
+import { get } from "lodash";
+
 export default {
   data() {
     return {
@@ -86,6 +87,14 @@ export default {
     },
     isInDebt() {
       return this.$store.getters.isInDebt;
+    },
+    balanceText() {
+      let balancePadded = Math.abs(
+        get(this, "$store.getters.balance", 0)
+      ).toFixed(2);
+
+      if (!this.$store.getters.isInDebt) return `$${balancePadded}`;
+      else return `-$${balancePadded}`;
     }
   },
   methods: {

@@ -6,82 +6,29 @@ features:
     components:
       transactionsCRUD: !com.amazonaws.mobilehub.v0.API 
         attributes:
+          api-arn: 'arn:aws:execute-api:us-west-2:288739247229:6qialdt9z7'
           name: transactionsCRUD
           requires-signin: true
           sdk-generation-stage-name: Development
         paths:
-          /transactions: !com.amazonaws.mobilehub.v0.Function 
-            codeFilename: uploads/transactions-20180529233251.zip
-            description: 'Handler for calls to resource path : /transactions/{proxy+}'
-            enableCORS: true
-            environment: {}
-            handler: lambda.handler
-            hashcode: QQnyg8qF7QWk3wSjsQgtmFfrxY1Ao0eBfswQMSWxKbA=
-            memorySize: '128'
-            modified: '2018-05-30T06:33:27.678+0000'
-            name: transactions
-            runtime: nodejs6.10
-            timeout: '3'
-            version: uJDDHS5Alan_BNTp4zqikNyDlGlMvPJN
-          '/transactions/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
-            codeFilename: uploads/transactions-20180529233251.zip
-            description: 'Handler for calls to resource path : /transactions/{proxy+}'
-            enableCORS: true
-            environment: {}
-            handler: lambda.handler
-            hashcode: QQnyg8qF7QWk3wSjsQgtmFfrxY1Ao0eBfswQMSWxKbA=
-            memorySize: '128'
-            modified: '2018-05-30T06:33:27.678+0000'
-            name: transactions
-            runtime: nodejs6.10
-            timeout: '3'
-            version: YvcL1wkgSiqFweGNq7T1RO68wB187DBN
-  content-delivery: !com.amazonaws.mobilehub.v0.ContentDelivery 
-    attributes:
-      enabled: true
-      visibility: public-global
-    components:
-      release: !com.amazonaws.mobilehub.v0.Bucket {}
+          /transactions: !com.amazonaws.mobilehub.v0.Function {}
+          '/transactions/{proxy+}': !com.amazonaws.mobilehub.v0.Function {}
   database: !com.amazonaws.mobilehub.v0.Database 
     components:
-      database-nosql: !com.amazonaws.mobilehub.v0.NoSQLDatabase 
-        tables:
-          - !com.amazonaws.mobilehub.v0.NoSQLTable 
-            attributes:
-              amount: N
-              balance: N
-              date: S
-              userId: S
-            hashKeyName: userId
-            hashKeyType: S
-            rangeKeyName: date
-            rangeKeyType: S
-            tableName: ___DYNAMIC_PREFIX___-transactions
-            tablePrivacy: private
+      database-nosql: !com.amazonaws.mobilehub.v0.NoSQLDatabase {}
   mobile-analytics: !com.amazonaws.mobilehub.v0.Pinpoint 
     components:
       analytics: !com.amazonaws.mobilehub.v0.PinpointAnalytics {}
+      messaging-sms: !com.amazonaws.mobilehub.v0.PinpointMessaging 
+        attributes:
+          deliveryType: sms
   sign-in: !com.amazonaws.mobilehub.v0.SignIn 
     attributes:
       enabled: true
-      optional-sign-in: true
+      optional-sign-in: false
     components:
       sign-in-user-pools: !com.amazonaws.mobilehub.v0.UserPoolsIdentityProvider 
         attributes:
-          alias-attributes:
-            - email
-            - phone_number
-          mfa-configuration: ON
-          name: userpool
-          password-policy: !com.amazonaws.mobilehub.ConvertibleMap 
-            min-length: '8'
-            require-lower-case: true
-            require-numbers: true
-            require-symbols: true
-            require-upper-case: true
-  user-files: !com.amazonaws.mobilehub.v0.UserFiles 
-    attributes:
-      enabled: true
-      wildcard-cors-policy: true
-name: aws-amplify-vue-2018-05-20-19-25-58
+          user-pool-id: us-west-2_PUGwGAxxh
+name: IEEESSMMS
 region: us-west-2

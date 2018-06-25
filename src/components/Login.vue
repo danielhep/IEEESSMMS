@@ -19,6 +19,8 @@
                 </v-form>
               </v-card-text>
               <v-card-actions>
+                <router-link tag="v-btn" to="/register">Register</router-link>
+                <v-btn @click="resendSignUp()">Resend Verification Code</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn @click="submitLogin()" color="primary">Login</v-btn>
               </v-card-actions>
@@ -54,13 +56,18 @@ export default {
           this.$router.push("/");
         })
         .catch(err => {
-          console.log(err);
           this.errorMessage = err.message;
           switch (err.code) {
             case "UserNotConfirmedException":
-              this.$router.push("/signup/verify");
+              this.$router.push("/register/verify");
           }
         });
+    },
+
+    resendSignUp() {
+      this.$store
+        .dispatch("resendSignUp", this.username)
+        .then(resp => console.log(resp));
     }
   }
 };

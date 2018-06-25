@@ -13,10 +13,11 @@
                   {{errorMessage}}
                 </v-alert>
                 <v-form>
-                  <v-text-field id="email" prepend-icon="lock" name="email" label="WWU Email" type="text" v-model="credentials.email"></v-text-field>
-                  <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password" v-model="credentials.password"></v-text-field>
-                  <v-text-field id="phone" prepend-icon="lock" name="phone" label="Phone Number" type="text" v-model="credentials.phone"></v-text-field>
-                  <v-text-field id="wid" prepend-icon="lock" name="password" label="Password" type="text" v-model="credentials.wid"></v-text-field>
+                  <v-text-field prepend-icon="email" label="WWU Email" type="text" v-model="credentials.email"></v-text-field>
+                  <v-text-field prepend-icon="text" label="Full Name" type="text" v-model="credentials.name"></v-text-field>
+                  <v-text-field prepend-icon="lock" label="Password" type="password" v-model="credentials.password"></v-text-field>
+                  <v-text-field prepend-icon="phone" label="Phone Number" type="text" v-model="credentials.phone"></v-text-field>
+                  <v-text-field prepend-icon="perm_identity" label="Western ID" type="text" v-model="credentials.wid"></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -41,7 +42,8 @@ export default {
       credentials: {
         email: "",
         password: "",
-        phone: "",
+        phone: "+1",
+        name: "",
         wid: ""
       },
       errorMessage: ""
@@ -49,21 +51,13 @@ export default {
   },
   methods: {
     submitRegistration() {
-      Auth.signUp({
-        username: this.credentials.wid,
-        password: this.credentials.password,
-        attributes: {
-          email: this.credentials.email,
-          phone_number: this.credentials.phone
-        }
-      })
-        .then(usr => {
-          console.log("sign up success", usr);
-          console.log(Auth.currentAuthenticatedUser());
-          this.$router.push("/signup/verify");
-        })
+      console.log(this.$data.credentials);
+      this.$store
+        .dispatch("signUp", this.$data.credentials)
+        .then(usr =>
+          this.$router.push(`/register/verify/${this.$data.credentials.wid}`)
+        )
         .catch(err => {
-          console.log(err);
           this.errorMessage = err.message;
         });
     }

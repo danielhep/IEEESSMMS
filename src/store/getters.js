@@ -1,20 +1,16 @@
+import { get, last } from "lodash";
+
 export default {
   userSignedIn(state) {
     return state.user != null;
   },
   userFullName(state) {
-    return state.user ? state.user.attributes.name : null;
+    return get(state, "user.attributes.name", "Not signed in.");
   },
   balance(state) {
-    return state.transactionData.length
-      ? Math.abs(
-          state.transactionData[state.transactionData.length - 1].balance
-        ).toFixed(2)
-      : "0";
+    return get(last(get(state, "transactionData")), "balance");
   },
   isInDebt(state) {
-    return state.transactionData.length
-      ? state.transactionData[state.transactionData.length - 1].balance < 0
-      : null;
+    return get(last(get(state, "transactionData")), "balance") < 0;
   }
 };
